@@ -3,6 +3,8 @@ import { ref, computed } from 'vue';
 
 import Task from './components/Task.vue';
 import Filter from './components/Filter.vue';
+import ModalWindow from './components/modal/ModalWindow.vue';
+import AddTaskModal from './components/modal/AddTaskModal.vue';
 
 const appName = "  Tasks Manager";
 
@@ -67,6 +69,8 @@ const filteredTasks = computed(() => {
   };
 });
 
+let modalIsActive = ref(false);
+
 function addTask() {
   // validation
   if (newTask.name && newTask.description) {
@@ -106,6 +110,9 @@ function setFilter(value) {
           {{ appName }}
         </h1>
       </div>
+      <div class="header-side">
+        <button @click="modalIsActive = true" class="btn secondary">+ Add Task</button>
+      </div>
     </div>
 
     <Filter @setFilter="setFilter" :filterBy="filterBy" />
@@ -114,12 +121,9 @@ function setFilter(value) {
       <Task @toggleCompleted="toggleCompleted" v-for="(task, index) in filteredTasks" :key="task.id" :task="task" />
     </div>
 
-    <div class="add-task">
-      <h3>Add a new task</h3>
-      <input v-model="newTask.name" type="text" name="title" placeholder="Enter a title..."><br />
-      <textarea v-model="newTask.description" name="description" rows="4" placeholder="Enter a description..." /><br />
-      <button @click="addTask" class="btn gray">Add Task</button>
-    </div>
+    <ModalWindow v-if="modalIsActive" @closePopup="modalIsActive = false">
+      <AddTaskModal />
+    </ModalWindow>
   </main>
 </template>
 
