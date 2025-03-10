@@ -1,5 +1,10 @@
 <script setup>
 import ModalCloseButton from './ModalCloseButton.vue';
+
+import { useTasksStore } from '@/stores/tasksStore';
+
+const store = useTasksStore();
+
 </script>
 
 <template>

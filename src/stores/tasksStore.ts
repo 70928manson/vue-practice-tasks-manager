@@ -1,57 +1,19 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue';
 
+type Task = {
+    id: number,
+    name: string,
+    description: string,
+    completed: boolean
+};
+
 export const useTasksStore = defineStore('tasks', () => {
-    const tasks = ref([
-        {
-            id: 1,
-            name: "Website design",
-            description: "Define the style guide, branding and create the webdesign on Figma.",
-            completed: true
-        },
-        {
-            id: 2,
-            name: "Website development",
-            description: "Develop the portfolio website using Vue JS.",
-            completed: false
-        },
-        {
-            id: 3,
-            name: "Hosting and infrastructure",
-            description: "Define hosting, domain and infrastructure for the portfolio website.",
-            completed: false
-        },
-        {
-            id: 4,
-            name: "Composition API",
-            description: "Learn how to use the composition API and how it compares to the options API.",
-            completed: true
-        },
-        {
-            id: 5,
-            name: "Pinia",
-            description: "Learn how to setup a store using Pinia.",
-            completed: true
-        },
-        {
-            id: 6,
-            name: "Groceries",
-            description: "Buy rice, apples and potatos.",
-            completed: false
-        },
-        {
-            id: 7,
-            name: "Bank account",
-            description: "Open a bank account for my freelance business.",
-            completed: false
-        }
-    ]);
+    const tasks = ref<Task[]>(JSON.parse(localStorage.getItem('tasks') || '[]'));
 
     let filterBy = ref("");
 
-    let newTask = {
-        completed: false,
-    };
+    let modalIsActive = ref(false);
 
     function setFilter(value: string) {
         filterBy.value = value;
@@ -68,17 +30,14 @@ export const useTasksStore = defineStore('tasks', () => {
         };
     });
 
-    function addTask() {
+    function addTask(newTask: { name: string, description: string, completed: boolean, id: number }) {
         // validation
         if (newTask.name && newTask.description) {
-            newTask.id = Math.max(...tasks.value.map(task => task.id)) + 1;
+            newTask.id = Math.max(...tasks.value.map(task => task.id), 0) + 1;
 
             tasks.value.push(newTask);
 
-            // 重置
-            newTask = {
-                completed: false,
-            };
+            closeModal();
         } else {
             alert("Please fill in all fields.");
         };
@@ -92,5 +51,13 @@ export const useTasksStore = defineStore('tasks', () => {
         })
     };
 
-    return { tasks, filterBy, setFilter, filteredTasks, addTask, toggleCompleted };
+    function openModal() {
+        modalIsActive.value = true;
+    };
+
+    function closeModal() {
+        modalIsActive.value = false;
+    };
+
+    return { tasks, filterBy, setFilter, filteredTasks, addTask, toggleCompleted, modalIsActive, openModal, closeModal };
 })

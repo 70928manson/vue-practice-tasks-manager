@@ -10,10 +10,11 @@ import { useTasksStore } from './stores/tasksStore';
 
 const store = useTasksStore();
 
+store.$subscribe((mutation, state) => {
+  localStorage.setItem('tasks', JSON.stringify(state.tasks));
+})
+
 const appName = "  Tasks Manager";
-
-let modalIsActive = ref(false);
-
 </script>
 
 <template>
@@ -26,7 +27,7 @@ let modalIsActive = ref(false);
         </h1>
       </div>
       <div class="header-side">
-        <button @click="modalIsActive = true" class="btn secondary">+ Add Task</button>
+        <button @click="store.openModal" class="btn secondary">+ Add Task</button>
       </div>
     </div>
 
@@ -36,7 +37,7 @@ let modalIsActive = ref(false);
       <Task v-for="(task, index) in store.filteredTasks" :key="task.id" :task="task" />
     </div>
 
-    <ModalWindow v-if="modalIsActive" @closePopup="modalIsActive = false">
+    <ModalWindow v-if="store.modalIsActive" @closePopup="store.closeModal">
       <AddTaskModal />
     </ModalWindow>
   </main>
