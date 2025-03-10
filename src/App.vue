@@ -70,6 +70,14 @@ function addTask() {
   };
 };
 
+function toggleCompleted(id) {
+  tasks.value.forEach(task => {
+    if (task.id === id) {
+      task.completed = !task.completed;
+    }
+  })
+};
+
 </script>
 
 <template>
@@ -101,7 +109,7 @@ function addTask() {
     </div>
 
     <div class="tasks">
-      <Task v-for="(task, index) in tasks" :key="task.id" :task="task" />
+      <Task @toggleCompleted="toggleCompleted" v-for="(task, index) in tasks" :key="task.id" :task="task" />
     </div>
 
     <div class="add-task">
@@ -109,13 +117,9 @@ function addTask() {
       <input v-model="newTask.name" type="text" name="title" placeholder="Enter a title..."><br />
       <textarea v-model="newTask.description" name="description" rows="4" placeholder="Enter a description..." /><br />
       <button @click="addTask" class="btn gray">Add Task</button>
-
     </div>
 
   </main>
-
-
-
 </template>
 
 
